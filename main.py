@@ -23,10 +23,10 @@ mirror = open("/dev/mirror", "rb")
 ENDPOINT=args.endpoint+"/rfid/{id}/detect"
 
 while True:
-    donnee = mirror.read(16)
-    if donnee != '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00':
-        rfid_id = binascii.hexlify(donnee)[4:]
-        if donnee[0:2] == '\x02\x01': # Puce posée
+    data = mirror.read(16)
+    if data != b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00':
+        rfid_id = binascii.hexlify(data)[4:]
+        if data[0:2] == b'\x02\x01': # Puce posée
             logger.debug("Detected chip", rfid_id=rfid_id)
 
             json_data={
@@ -44,5 +44,5 @@ while True:
                 time.sleep(5)
      
 
-        elif donnee[0:2] == '\x02\x02': #Puce retirée
+        elif data[0:2] == b'\x02\x02': #Puce retirée
             logger.debug("Chip left", rfid_id=rfid_id)
